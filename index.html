@@ -20,20 +20,21 @@
     .progress-bar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: width 0.5s; }
     .history-item { font-size: 13px; background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 4px solid #22c55e; }
     .item-gasto { border-left-color: #ef4444; }
-    #boxQtd { background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 10px; display: none; border: 1px solid #fbbf24; }
-    .promo-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 5px; display: block; }
+    #boxQtd { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #fbbf24; }
+    .promo-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 8px; display: block; text-align: center; }
   </style>
 </head>
 <body>
 
   <h1>💰 HigiExpert Pro</h1>
 
+  <!-- REGISTRO DE SERVIÇOS -->
   <div class="card">
     <h2>🛋️ Registrar Serviço</h2>
     <select id="selectServico" onchange="atualizarCampos()">
       <option value="">-- Escolha um serviço --</option>
-      <optgroup label="Promoções Cadeiras">
-        <option value="promo|cadeira">🪑 Cadeira (Promo: 4=R$80 / 6=R$100)</option>
+      <optgroup label="Promoção Exclusiva">
+        <option value="promo|cadeira">🪑 Cadeiras (Promo Progressiva)</option>
       </optgroup>
       <optgroup label="Poltronas">
         <option value="55|70|Poltrona Pequena">🛋️ Poltrona Pequena (R$70)</option>
@@ -43,41 +44,44 @@
       <optgroup label="Sofás e Colchões">
         <option value="90|120|Sofá 2 lugares">Sofá 2 lugares (R$120)</option>
         <option value="110|150|Sofá 3 lugares">Sofá 3 lugares (R$150)</option>
-        <option value="65|80|Colchão Solteiro">Colchão Solteiro (R$80)</option>
-        <option value="100|120|Colchão Casal">Colchão Casal (R$120)</option>
+        <option value="100|120|Carro Bancos">Carro - Bancos (R$120)</option>
       </optgroup>
       <option value="0|0|Personalizado">Personalizado</option>
     </select>
 
-    <div id="boxQtd">
-      <label>Quantidade de Cadeiras</label>
-      <input type="number" id="qtd" value="1" min="1" oninput="ajustarPromocaoCadeira()">
+    <!-- Quantidade Dinâmica -->
+    <div id="boxQtd" style="display:none;">
+      <label>Quantas Cadeiras?</label>
+      <input type="number" id="qtd" value="1" min="1" oninput="calcularCadeiraHigi()">
       <span id="msgPromo" class="promo-tag"></span>
     </div>
     
-    <label>Valor Total (R$)</label>
+    <label>Valor Cobrado (R$)</label>
     <input type="number" id="valor" placeholder="0.00">
     
-    <label>Custo Prod. (R$)</label>
+    <label>Custo Produtos (R$)</label>
     <input type="number" id="custo" placeholder="0.00">
     
-    <label>Seu Ganho (R$)</label>
-    <input type="number" id="maodeobra" placeholder="0.00" oninput="ajustarValorFinal()">
+    <label>Seu Lucro (R$)</label>
+    <input type="number" id="maodeobra" placeholder="0.00" oninput="ajustarManual()">
     
     <button class="btn-calc" onclick="salvarServico()">Salvar Serviço</button>
   </div>
 
+  <!-- GASTOS EXTRAS -->
   <div class="card" style="border: 1px solid #ef4444;">
-    <h2>⛽ Gastos Extras</h2>
+    <h2>⛽ Registrar Saída</h2>
     <input type="number" id="valorGasto" placeholder="Valor do Gasto R$">
-    <button class="btn-extra" onclick="salvarGasto()">Registrar Saída</button>
+    <button class="btn-extra" onclick="salvarGasto()">Registrar Gasto</button>
   </div>
 
+  <!-- RESUMO -->
   <div class="card">
-    <h2>📊 Lucro Mensal Real</h2>
+    <h2>📊 Lucro Líquido Real</h2>
     <span id="totalAcumulado" class="total-valor">R$ 0,00</span>
+    
     <div class="meta-box">
-      <label>Meta Mensal (R$)</label>
+      <label>Meta do Mês (R$)</label>
       <input type="number" id="inputMeta" value="5000" onchange="exibir()">
       <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
       <div style="display: flex; justify-content: space-between; font-size: 11px; color:#94a3b8;">
@@ -85,119 +89,115 @@
         <span id="txtFalta">Falta: R$ 0,00</span>
       </div>
     </div>
+
     <div id="listaHistorico" style="margin-top: 15px;"></div>
-    <button onclick="compartilhar()" style="background:#25d366; color:white;">📲 Enviar WhatsApp</button>
-    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:10px; width:100%;">Zerar Mês</button>
+    <button onclick="compartilhar()" style="background:#25d366; color:white;">📲 Relatório WhatsApp</button>
+    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Zerar Mês</button>
   </div>
 
   <script>
     window.onload = exibir;
 
     function atualizarCampos() {
-      const select = document.getElementById('selectServico');
-      const boxQtd = document.getElementById('boxQtd');
-      const val = select.value;
-
-      if (val === "promo|cadeira") {
-        boxQtd.style.display = "block";
+      const s = document.getElementById('selectServico');
+      const b = document.getElementById('boxQtd');
+      if (s.value === "promo|cadeira") {
+        b.style.display = "block";
         document.getElementById('qtd').value = 1;
-        ajustarPromocaoCadeira();
-      } else if (val && val !== "0|0|Personalizado") {
-        boxQtd.style.display = "none";
-        const [lucro, preco] = val.split('|');
+        calcularCadeiraHigi();
+      } else if (s.value && s.value !== "0|0|Personalizado") {
+        b.style.display = "none";
+        const [lucro, preco] = s.value.split('|');
         document.getElementById('valor').value = preco;
         document.getElementById('custo').value = (preco - lucro).toFixed(2);
         document.getElementById('maodeobra').value = lucro;
       } else {
-        boxQtd.style.display = "none";
+        b.style.display = "none";
       }
     }
 
-    function ajustarPromocaoCadeira() {
+    function calcularCadeiraHigi() {
       const q = parseInt(document.getElementById('qtd').value) || 1;
-      let precoTotal = q * 25; // Preço base unitário
-      let custoTotal = q * 3;  // Custo base unitário (conforme seus dados)
+      let precoFinal = 0;
       const msg = document.getElementById('msgPromo');
 
-      if (q >= 4 && q < 6) {
-        precoTotal = 80;
-        msg.innerText = "⭐ PROMO ATIVA: 4 cadeiras por R$80!";
-      } else if (q >= 6) {
-        precoTotal = 100 + ((q-6) * 16.66); // R$100 o kit + proporcional
-        msg.innerText = "🔥 SUPER PROMO: 6+ cadeiras por R$100!";
+      // REGRA: Unitário 25 | 4+ = 80 | 6+ = 100
+      if (q < 4) {
+        precoFinal = q * 25;
+        msg.innerText = `R$ 25,00 cada`;
+      } else if (q >= 4 && q < 6) {
+        precoFinal = 80;
+        msg.innerText = `⭐ PROMO: Kit 4/5 cadeiras por R$ 80!`;
       } else {
-        msg.innerText = "";
+        // A partir de 6, R$ 100. Se for 7, 8... mantém a média da promo (100/6 = 16.66)
+        precoFinal = Math.max(100, (q * 16.666));
+        msg.innerText = `🔥 SUPER PROMO: Kit 6+ cadeiras por R$ 100!`;
       }
 
-      document.getElementById('valor').value = precoTotal.toFixed(2);
-      document.getElementById('custo').value = custoTotal.toFixed(2);
-      document.getElementById('maodeobra').value = (precoTotal - custoTotal).toFixed(2);
+      const custoFixo = q * 3; // R$ 3 de produto por cadeira
+      document.getElementById('valor').value = precoFinal.toFixed(2);
+      document.getElementById('custo').value = custoFixo.toFixed(2);
+      document.getElementById('maodeobra').value = (precoFinal - custoFixo).toFixed(2);
     }
 
-    function ajustarValorFinal() {
-      const custo = parseFloat(document.getElementById('custo').value) || 0;
-      const mo = parseFloat(document.getElementById('maodeobra').value) || 0;
-      document.getElementById('valor').value = (custo + mo).toFixed(2);
+    function ajustarManual() {
+      const c = parseFloat(document.getElementById('custo').value) || 0;
+      const m = parseFloat(document.getElementById('maodeobra').value) || 0;
+      document.getElementById('valor').value = (c + m).toFixed(2);
     }
 
     function salvarServico() {
       const v = parseFloat(document.getElementById('valor').value);
       const c = parseFloat(document.getElementById('custo').value);
-      const select = document.getElementById('selectServico');
-      let nome = select.options[select.selectedIndex].text;
-      
-      if (select.value === "promo|cadeira") {
-        nome = `Cadeiras (${document.getElementById('qtd').value}x)`;
-      }
-
-      if (isNaN(v) || isNaN(c)) return alert("Erro nos valores!");
+      const s = document.getElementById('selectServico');
+      let nome = s.options[s.selectedIndex].text;
+      if (s.value === "promo|cadeira") nome = `Cadeiras (${document.getElementById('qtd').value}x)`;
+      if (isNaN(v) || isNaN(c)) return;
       addHist(nome, (v - c), 'servico');
     }
 
     function salvarGasto() {
       const v = parseFloat(document.getElementById('valorGasto').value);
       if (isNaN(v)) return;
-      addHist("Gasto Extra", -v, 'gasto');
+      addHist("Gasto/Saída", -v, 'gasto');
       document.getElementById('valorGasto').value = "";
     }
 
     function addHist(nome, valor, tipo) {
-      let hist = JSON.parse(localStorage.getItem('higi_v8')) || [];
-      hist.unshift({ nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
-      localStorage.setItem('higi_v8', JSON.stringify(hist));
+      let h = JSON.parse(localStorage.getItem('higi_final')) || [];
+      h.unshift({ nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
+      localStorage.setItem('higi_final', JSON.stringify(h));
       exibir();
     }
 
     function exibir() {
-      const hist = JSON.parse(localStorage.getItem('higi_v8')) || [];
-      const meta = parseFloat(document.getElementById('inputMeta').value) || 1;
-      let soma = 0;
-
-      document.getElementById('listaHistorico').innerHTML = hist.map(i => {
-        soma += i.valor;
+      const h = JSON.parse(localStorage.getItem('higi_final')) || [];
+      const m = parseFloat(document.getElementById('inputMeta').value) || 1;
+      let s = 0;
+      document.getElementById('listaHistorico').innerHTML = h.map(i => {
+        s += i.valor;
         return `<div class="history-item ${i.tipo === 'gasto' ? 'item-gasto' : ''}">
           <div><strong>${i.nome}</strong><br><small>${i.data}</small></div>
           <span style="color: ${i.valor >= 0 ? '#22c55e' : '#ef4444'}">R$ ${i.valor.toFixed(2)}</span>
         </div>`;
       }).join('');
-
-      document.getElementById('totalAcumulado').innerText = `R$ ${soma.toFixed(2)}`;
-      let p = Math.min((soma / meta) * 100, 100);
-      document.getElementById('progressBar').style.width = (soma > 0 ? p : 0) + "%";
-      document.getElementById('txtProgresso').innerText = (soma > 0 ? p.toFixed(1) : 0) + "%";
-      document.getElementById('txtFalta').innerText = `Falta: R$ ${Math.max(meta - soma, 0).toFixed(2)}`;
+      document.getElementById('totalAcumulado').innerText = `R$ ${s.toFixed(2)}`;
+      let p = Math.min((s / m) * 100, 100);
+      document.getElementById('progressBar').style.width = (s > 0 ? p : 0) + "%";
+      document.getElementById('txtProgresso').innerText = (s > 0 ? p.toFixed(1) : 0) + "%";
+      document.getElementById('txtFalta').innerText = `Falta: R$ ${Math.max(m - s, 0).toFixed(2)}`;
     }
 
     function compartilhar() {
-      const hist = JSON.parse(localStorage.getItem('higi_v8')) || [];
+      const h = JSON.parse(localStorage.getItem('higi_final')) || [];
       let total = 0;
-      let t = `📊 *RELATÓRIO HIGIEXPERT*\n\n`;
-      hist.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
-      t += `\n💰 *LUCRO ACUMULADO: R$ ${total.toFixed(2)}*`;
+      let t = `📊 *HIGIEXPERT RELATÓRIO*\n\n`;
+      h.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
+      t += `\n💰 *LUCRO REAL: R$ ${total.toFixed(2)}*`;
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
-    function limpar() { if(confirm("Zerar mês?")) { localStorage.removeItem('higi_v8'); exibir(); } }
+    function limpar() { if(confirm("Deseja zerar o histórico?")) { localStorage.removeItem('higi_final'); exibir(); } }
   </script>
 </body>
 </html>
