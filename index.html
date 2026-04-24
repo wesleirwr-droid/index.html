@@ -20,7 +20,8 @@
     .progress-bar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: width 0.5s; }
     .history-item { font-size: 13px; background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 4px solid #22c55e; }
     .item-gasto { border-left-color: #ef4444; }
-    #boxQtd { background: #334155; padding: 10px; border-radius: 10px; margin-top: 10px; display: none; }
+    #boxQtd { background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 10px; display: none; border: 1px solid #fbbf24; }
+    .promo-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 5px; display: block; }
   </style>
 </head>
 <body>
@@ -31,8 +32,8 @@
     <h2>🛋️ Registrar Serviço</h2>
     <select id="selectServico" onchange="atualizarCampos()">
       <option value="">-- Escolha um serviço --</option>
-      <optgroup label="Cadeiras">
-        <option value="17|20|Cadeira Simples">🪑 Cadeira Simples (R$20)</option>
+      <optgroup label="Promoções Cadeiras">
+        <option value="promo|cadeira">🪑 Cadeira (Promo: 4=R$80 / 6=R$100)</option>
       </optgroup>
       <optgroup label="Poltronas">
         <option value="55|70|Poltrona Pequena">🛋️ Poltrona Pequena (R$70)</option>
@@ -48,19 +49,19 @@
       <option value="0|0|Personalizado">Personalizado</option>
     </select>
 
-    <!-- Campo de Quantidade para Cadeiras -->
     <div id="boxQtd">
-      <label>Quantidade de Unidades</label>
-      <input type="number" id="qtd" value="1" oninput="ajustarPorQtd()">
+      <label>Quantidade de Cadeiras</label>
+      <input type="number" id="qtd" value="1" min="1" oninput="ajustarPromocaoCadeira()">
+      <span id="msgPromo" class="promo-tag"></span>
     </div>
     
-    <label>Valor Total Cobrado (R$)</label>
+    <label>Valor Total (R$)</label>
     <input type="number" id="valor" placeholder="0.00">
     
-    <label>Custo Total Produtos (R$)</label>
+    <label>Custo Prod. (R$)</label>
     <input type="number" id="custo" placeholder="0.00">
     
-    <label>Ganho Mão de Obra (R$)</label>
+    <label>Seu Ganho (R$)</label>
     <input type="number" id="maodeobra" placeholder="0.00" oninput="ajustarValorFinal()">
     
     <button class="btn-calc" onclick="salvarServico()">Salvar Serviço</button>
@@ -68,13 +69,8 @@
 
   <div class="card" style="border: 1px solid #ef4444;">
     <h2>⛽ Gastos Extras</h2>
-    <select id="tipoGasto">
-      <option value="Gasolina">⛽ Gasolina</option>
-      <option value="Alimentação">🍔 Alimentação</option>
-      <option value="Ajudante">👥 Ajudante</option>
-    </select>
-    <input type="number" id="valorGasto" placeholder="R$">
-    <button class="btn-extra" onclick="salvarGasto()">Registrar Gasto</button>
+    <input type="number" id="valorGasto" placeholder="Valor do Gasto R$">
+    <button class="btn-extra" onclick="salvarGasto()">Registrar Saída</button>
   </div>
 
   <div class="card">
@@ -91,45 +87,51 @@
     </div>
     <div id="listaHistorico" style="margin-top: 15px;"></div>
     <button onclick="compartilhar()" style="background:#25d366; color:white;">📲 Enviar WhatsApp</button>
-    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Zerar Mês</button>
+    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:10px; width:100%;">Zerar Mês</button>
   </div>
 
   <script>
     window.onload = exibir;
 
-    let baseLucro = 0;
-    let basePreco = 0;
-
     function atualizarCampos() {
       const select = document.getElementById('selectServico');
       const boxQtd = document.getElementById('boxQtd');
-      
-      if (select.value && select.value !== "0|0|Personalizado") {
-        const [lucro, preco] = select.value.split('|');
-        baseLucro = parseFloat(lucro);
-        basePreco = parseFloat(preco);
-        
-        // Se for cadeira, mostra o multiplicador
-        boxQtd.style.display = select.options[select.selectedIndex].text.includes("Cadeira") ? "block" : "none";
+      const val = select.value;
+
+      if (val === "promo|cadeira") {
+        boxQtd.style.display = "block";
         document.getElementById('qtd').value = 1;
-        
-        document.getElementById('valor').value = basePreco;
-        document.getElementById('custo').value = (basePreco - baseLucro).toFixed(2);
-        document.getElementById('maodeobra').value = baseLucro;
+        ajustarPromocaoCadeira();
+      } else if (val && val !== "0|0|Personalizado") {
+        boxQtd.style.display = "none";
+        const [lucro, preco] = val.split('|');
+        document.getElementById('valor').value = preco;
+        document.getElementById('custo').value = (preco - lucro).toFixed(2);
+        document.getElementById('maodeobra').value = lucro;
       } else {
         boxQtd.style.display = "none";
       }
     }
 
-    function ajustarPorQtd() {
+    function ajustarPromocaoCadeira() {
       const q = parseInt(document.getElementById('qtd').value) || 1;
-      const vTotal = basePreco * q;
-      const moTotal = baseLucro * q;
-      const cTotal = vTotal - moTotal;
+      let precoTotal = q * 25; // Preço base unitário
+      let custoTotal = q * 3;  // Custo base unitário (conforme seus dados)
+      const msg = document.getElementById('msgPromo');
 
-      document.getElementById('valor').value = vTotal.toFixed(2);
-      document.getElementById('custo').value = cTotal.toFixed(2);
-      document.getElementById('maodeobra').value = moTotal.toFixed(2);
+      if (q >= 4 && q < 6) {
+        precoTotal = 80;
+        msg.innerText = "⭐ PROMO ATIVA: 4 cadeiras por R$80!";
+      } else if (q >= 6) {
+        precoTotal = 100 + ((q-6) * 16.66); // R$100 o kit + proporcional
+        msg.innerText = "🔥 SUPER PROMO: 6+ cadeiras por R$100!";
+      } else {
+        msg.innerText = "";
+      }
+
+      document.getElementById('valor').value = precoTotal.toFixed(2);
+      document.getElementById('custo').value = custoTotal.toFixed(2);
+      document.getElementById('maodeobra').value = (precoTotal - custoTotal).toFixed(2);
     }
 
     function ajustarValorFinal() {
@@ -141,31 +143,33 @@
     function salvarServico() {
       const v = parseFloat(document.getElementById('valor').value);
       const c = parseFloat(document.getElementById('custo').value);
-      if (isNaN(v) || isNaN(c)) return alert("Valores inválidos!");
-      
       const select = document.getElementById('selectServico');
-      const q = document.getElementById('boxQtd').style.display === "block" ? ` (${document.getElementById('qtd').value}x)` : "";
-      const nome = select.options[select.selectedIndex].text.split(' (')[0] + q;
+      let nome = select.options[select.selectedIndex].text;
       
+      if (select.value === "promo|cadeira") {
+        nome = `Cadeiras (${document.getElementById('qtd').value}x)`;
+      }
+
+      if (isNaN(v) || isNaN(c)) return alert("Erro nos valores!");
       addHist(nome, (v - c), 'servico');
     }
 
     function salvarGasto() {
       const v = parseFloat(document.getElementById('valorGasto').value);
       if (isNaN(v)) return;
-      addHist(document.getElementById('tipoGasto').value, -v, 'gasto');
+      addHist("Gasto Extra", -v, 'gasto');
       document.getElementById('valorGasto').value = "";
     }
 
     function addHist(nome, valor, tipo) {
-      let hist = JSON.parse(localStorage.getItem('higi_v7')) || [];
+      let hist = JSON.parse(localStorage.getItem('higi_v8')) || [];
       hist.unshift({ nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
-      localStorage.setItem('higi_v7', JSON.stringify(hist));
+      localStorage.setItem('higi_v8', JSON.stringify(hist));
       exibir();
     }
 
     function exibir() {
-      const hist = JSON.parse(localStorage.getItem('higi_v7')) || [];
+      const hist = JSON.parse(localStorage.getItem('higi_v8')) || [];
       const meta = parseFloat(document.getElementById('inputMeta').value) || 1;
       let soma = 0;
 
@@ -185,7 +189,7 @@
     }
 
     function compartilhar() {
-      const hist = JSON.parse(localStorage.getItem('higi_v7')) || [];
+      const hist = JSON.parse(localStorage.getItem('higi_v8')) || [];
       let total = 0;
       let t = `📊 *RELATÓRIO HIGIEXPERT*\n\n`;
       hist.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
@@ -193,8 +197,7 @@
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
-    function limpar() { if(confirm("Zerar mês?")) { localStorage.removeItem('higi_v7'); exibir(); } }
+    function limpar() { if(confirm("Zerar mês?")) { localStorage.removeItem('higi_v8'); exibir(); } }
   </script>
 </body>
-        </html>
-        
+</html>
