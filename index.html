@@ -14,12 +14,18 @@
     button { width: 100%; padding: 14px; border: none; border-radius: 12px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .btn-calc { background: #22c55e; color: #fff; }
     .btn-extra { background: #f59e0b; color: #fff; }
-    .total-valor { font-size: 28px; color: #22c55e; font-weight: bold; display: block; text-align: center; }
+    .btn-blue { background: #3b82f6; color: #fff; }
+    
+    /* Barra de Progresso */
     .meta-box { background: #0f172a; padding: 15px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; }
-    .progress-bg { background: #334155; border-radius: 20px; height: 18px; width: 100%; margin: 10px 0; overflow: hidden; }
-    .progress-bar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: width 0.5s; }
+    .progress-bg { background: #334155; border-radius: 20px; height: 20px; width: 100%; margin: 10px 0; overflow: hidden; }
+    .progress-bar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: width 0.5s ease-in-out; }
+    
+    .total-container { text-align: center; margin-bottom: 15px; }
+    .total-valor { font-size: 28px; color: #22c55e; font-weight: bold; display: block; }
     .history-item { font-size: 13px; background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 4px solid #22c55e; }
     .item-gasto { border-left-color: #ef4444; }
+    .calc-res { background: #334155; padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center; font-weight: bold; color: #fbbf24; }
   </style>
 </head>
 <body>
@@ -31,59 +37,66 @@
     <h2>🛋️ Novo Serviço</h2>
     <select id="selectServico" onchange="atualizarCampos()">
       <option value="">-- Escolha um serviço --</option>
-      <option value="90|120|Sofá 2 lugares">Sofá 2 lugares (Sugerido R$120)</option>
-      <option value="110|150|Sofá 3 lugares">Sofá 3 lugares (Sugerido R$150)</option>
-      <option value="140|180|Sofá Grande">Sofá Grande (Sugerido R$180+)</option>
+      <option value="90|120|Sofá 2 lugares">Sofá 2 lugares (R$120)</option>
+      <option value="110|150|Sofá 3 lugares">Sofá 3 lugares (R$150)</option>
+      <option value="140|180|Sofá Grande">Sofá Grande (R$180+)</option>
       <option value="65|80|Colchão Solteiro">Colchão Solteiro (R$80)</option>
       <option value="100|120|Colchão Casal">Colchão Casal (R$120)</option>
       <option value="100|120|Carro Bancos">Carro - Bancos (R$120)</option>
       <option value="200|220|Carro Completo">Carro - Completo (R$220)</option>
-      <option value="0|0|Personalizado">Personalizado</option>
+      <option value="0|0|Personalizado">Outro / Personalizado</option>
     </select>
-    
-    <label>Valor Cobrado (R$)</label>
-    <input type="number" id="valor" placeholder="0.00">
-    
-    <label>Custo Produtos (R$)</label>
-    <input type="number" id="custo" placeholder="0.00">
-    
-    <label>Mão de Obra / Ganho Desejado (R$)</label>
-    <input type="number" id="maodeobra" placeholder="Sua parte no lucro" oninput="ajustarValorFinal()">
-    
+    <input type="number" id="valor" placeholder="Valor Cobrado R$">
+    <input type="number" id="custo" placeholder="Custo Prod. R$">
     <button class="btn-calc" onclick="salvarServico()">Salvar Serviço</button>
   </div>
 
   <!-- GASTOS EXTRAS -->
   <div class="card" style="border: 1px solid #ef4444;">
-    <h2>⛽ Outros Gastos</h2>
+    <h2>⛽ Gastos Extras</h2>
     <select id="tipoGasto">
       <option value="Gasolina">⛽ Gasolina</option>
       <option value="Alimentação">🍔 Alimentação</option>
-      <option value="Ajudante">👥 Ajudante Externo</option>
+      <option value="Ajudante">👥 Ajudante</option>
       <option value="Marketing">📱 Marketing</option>
+      <option value="Outros">⚙️ Outros</option>
     </select>
-    <input type="number" id="valorGasto" placeholder="Valor R$">
-    <button class="btn-extra" onclick="salvarGasto()">Registrar Gasto</button>
+    <input type="number" id="valorGasto" placeholder="Valor do Gasto R$">
+    <button class="btn-extra" onclick="salvarGasto()">Registrar Saída</button>
   </div>
 
   <!-- RESUMO E META -->
   <div class="card">
-    <h2>📊 Lucro Mensal Real</h2>
-    <span id="totalAcumulado" class="total-valor">R$ 0,00</span>
+    <h2>📊 Lucro Líquido Real</h2>
+    <div class="total-container">
+      <span id="totalAcumulado" class="total-valor">R$ 0,00</span>
+    </div>
 
     <div class="meta-box">
-      <label>Meta Mensal (R$)</label>
+      <label>Sua Meta Mensal (R$)</label>
       <input type="number" id="inputMeta" value="5000" onchange="exibir()">
-      <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
-      <div style="display: flex; justify-content: space-between; font-size: 11px; color:#94a3b8;">
-        <span id="txtProgresso">0%</span>
+      <div class="progress-bg">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 12px;">
+        <span id="txtProgresso">0% concluído</span>
         <span id="txtFalta">Falta: R$ 0,00</span>
       </div>
     </div>
 
-    <div id="listaHistorico" style="margin-top: 15px;"></div>
-    <button onclick="compartilhar()" style="background:#25d366; color:white;">📲 Enviar WhatsApp</button>
-    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Zerar Mês</button>
+    <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+    <div id="listaHistorico"></div>
+    <button onclick="compartilhar()" style="background:#25d366; color:white;">📲 Relatório WhatsApp</button>
+    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:10px; cursor:pointer; width:100%;">Zerar Mês</button>
+  </div>
+
+  <!-- CALCULADORA DE PRODUTOS -->
+  <div class="card">
+    <h2>🧪 Calculadora de Produtos</h2>
+    <input type="number" id="prodPreco" placeholder="Preço Embalagem R$">
+    <input type="number" id="prodMl" placeholder="Tamanho em ml (ex: 1500)">
+    <button class="btn-blue" onclick="calcProduto()">Ver Custo/ml</button>
+    <div id="resProduto" class="calc-res" style="display:none;"></div>
   </div>
 
   <script>
@@ -95,47 +108,35 @@
         const [lucro, preco] = select.value.split('|');
         document.getElementById('valor').value = preco;
         document.getElementById('custo').value = (preco - lucro).toFixed(2);
-        document.getElementById('maodeobra').value = lucro;
-      }
-    }
-
-    // Função para somar Mão de Obra + Custos no Valor Final se você alterar manualmente
-    function ajustarValorFinal() {
-      const custo = parseFloat(document.getElementById('custo').value) || 0;
-      const mo = parseFloat(document.getElementById('maodeobra').value) || 0;
-      if (mo > 0) {
-        document.getElementById('valor').value = (custo + mo).toFixed(2);
       }
     }
 
     function salvarServico() {
-      const v = parseFloat(document.getElementById('valor').value);
-      const c = parseFloat(document.getElementById('custo').value);
-      if (isNaN(v) || isNaN(c)) return alert("Preencha os valores!");
-      
-      const lucroCalculado = v - c;
       const select = document.getElementById('selectServico');
-      const nome = select.value === "0|0|Personalizado" ? (prompt("Nome?") || "Serviço") : select.value.split('|')[2];
-      
-      addHist(nome, lucroCalculado, 'servico');
+      const nome = select.value === "0|0|Personalizado" ? (prompt("Nome?") || "Extra") : select.value.split('|')[2];
+      const valor = parseFloat(document.getElementById('valor').value);
+      const custo = parseFloat(document.getElementById('custo').value);
+      if (isNaN(valor) || isNaN(custo)) return alert("Preencha os valores!");
+      addHist(nome, (valor - custo), 'servico');
     }
 
     function salvarGasto() {
-      const v = parseFloat(document.getElementById('valorGasto').value);
-      if (isNaN(v)) return;
-      addHist(document.getElementById('tipoGasto').value, -v, 'gasto');
+      const tipo = document.getElementById('tipoGasto').value;
+      const valor = parseFloat(document.getElementById('valorGasto').value);
+      if (isNaN(valor)) return alert("Preencha o valor!");
+      addHist(tipo, -valor, 'gasto');
       document.getElementById('valorGasto').value = "";
     }
 
     function addHist(nome, valor, tipo) {
-      let hist = JSON.parse(localStorage.getItem('higi_v6')) || [];
+      let hist = JSON.parse(localStorage.getItem('higi_v4')) || [];
       hist.unshift({ nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
-      localStorage.setItem('higi_v6', JSON.stringify(hist));
+      localStorage.setItem('higi_v4', JSON.stringify(hist));
       exibir();
     }
 
     function exibir() {
-      const hist = JSON.parse(localStorage.getItem('higi_v6')) || [];
+      const hist = JSON.parse(localStorage.getItem('higi_v4')) || [];
       const meta = parseFloat(document.getElementById('inputMeta').value) || 1;
       let soma = 0;
 
@@ -148,22 +149,35 @@
       }).join('');
 
       document.getElementById('totalAcumulado').innerText = `R$ ${soma.toFixed(2)}`;
-      let p = Math.min((soma / meta) * 100, 100);
-      document.getElementById('progressBar').style.width = (soma > 0 ? p : 0) + "%";
-      document.getElementById('txtProgresso').innerText = (soma > 0 ? p.toFixed(1) : 0) + "%";
+      
+      // Lógica da Barra de Meta
+      let porc = Math.min((soma / meta) * 100, 100);
+      porc = soma > 0 ? porc : 0;
+      document.getElementById('progressBar').style.width = porc + "%";
+      document.getElementById('txtProgresso').innerText = porc.toFixed(1) + "% concluído";
       document.getElementById('txtFalta').innerText = `Falta: R$ ${Math.max(meta - soma, 0).toFixed(2)}`;
     }
 
+    function calcProduto() {
+      const preco = parseFloat(document.getElementById('prodPreco').value);
+      const ml = parseFloat(document.getElementById('prodMl').value);
+      if (!preco || !ml) return;
+      const cMl = preco / ml;
+      const res = document.getElementById('resProduto');
+      res.style.display = "block";
+      res.innerHTML = `Custo: R$ ${cMl.toFixed(3)}/ml<br><small>Borrifador 500ml: R$ ${(cMl*500).toFixed(2)}</small>`;
+    }
+
     function compartilhar() {
-      const hist = JSON.parse(localStorage.getItem('higi_v6')) || [];
+      const hist = JSON.parse(localStorage.getItem('higi_v4')) || [];
       let total = 0;
-      let t = `📊 *RELATÓRIO HIGIEXPERT*\n\n`;
+      let t = `📊 *HIGIEXPERT PRO*\n\n`;
       hist.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
-      t += `\n💰 *LUCRO ACUMULADO: R$ ${total.toFixed(2)}*`;
+      t += `\n💰 *LUCRO REAL: R$ ${total.toFixed(2)}*`;
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
-    function limpar() { if(confirm("Zerar mês?")) { localStorage.removeItem('higi_v6'); exibir(); } }
+    function limpar() { if(confirm("Zerar mês?")) { localStorage.removeItem('higi_v4'); exibir(); } }
   </script>
 </body>
 </html>
