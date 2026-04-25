@@ -18,18 +18,15 @@
     .btn-calc { background: #22c55e; color: #fff; }
     .btn-blue { background: #3b82f6; color: #fff; }
     .res-box { background: #0f172a; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #3b82f6; text-align: center; }
-    
-    /* Tabela de Referência */
     .ref-table { width: 100%; font-size: 11px; margin-top: 15px; border-collapse: collapse; color: #94a3b8; }
     .ref-table th { text-align: left; color: #3b82f6; padding-bottom: 5px; }
     .ref-table td { padding: 4px 0; border-bottom: 1px solid #334155; }
-    .highlight { color: #fbbf24; font-weight: bold; }
-
     .total-valor { font-size: 32px; color: #22c55e; font-weight: bold; display: block; text-align: center; }
     .progress-bg { background: #334155; border-radius: 20px; height: 18px; width: 100%; margin: 10px 0; overflow: hidden; }
     .progress-bar { background: linear-gradient(90deg, #1d4ed8, #22c55e); height: 100%; width: 0%; transition: width 1s ease-in-out; }
     .history-item { font-size: 13px; background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #22c55e; }
     .delete-btn { color: #ef4444; background: none; border: none; font-size: 22px; cursor: pointer; padding: 0 10px; }
+    #boxQtd { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #fbbf24; display: none; }
   </style>
 </head>
 <body>
@@ -44,53 +41,56 @@
     <h2>🧪 Diluição de Produtos</h2>
     <label>Frasco (ml)</label>
     <input type="number" id="volumeFrasco" value="500">
-    
     <label>Diluição (1:...)</label>
     <select id="proporcaoDiluicao">
       <option value="5">1:5 (Pesada)</option>
       <option value="10" selected>1:10 (Média)</option>
       <option value="20">1:20 (Manutenção)</option>
+      <option value="30">1:30 (Leve/Manutenção)</option>
       <option value="40">1:40 (Leve)</option>
-      <option value="60">1:60 (Extratora/Tornador)</option>
+      <option value="60">1:60 (Extratora)</option>
     </select>
-    
-    <button class="btn-blue" onclick="calcularDiluicao()">Calcular</button>
-    
+    <button class="btn-blue" onclick="calcularDiluicao()">Calcular Medidas</button>
     <div id="resultadoDiluicao" class="res-box" style="display:none;">
       <strong id="msgProduto" style="color: #22c55e; font-size: 18px;"></strong><br>
       <span id="msgAgua" style="color: #94a3b8;"></span>
     </div>
-
-    <!-- TABELA DE REFERÊNCIA -->
     <table class="ref-table">
-      <thead><tr><th>Produto</th><th>Sujeira</th><th>Diluição</th></tr></thead>
+      <thead><tr><th>Produto</th><th>Diluição</th></tr></thead>
       <tbody>
-        <tr><td>PLURI</td><td>Pesada / Óleo</td><td class="highlight">1:5 a 1:10</td></tr>
-        <tr><td>OXI / KLYO</td><td>Manchas / Odor</td><td class="highlight">1:10 a 1:20</td></tr>
-        <tr><td>INTENSE</td><td>Plásticos Internos</td><td class="highlight">1:10 a 1:20</td></tr>
-        <tr><td>RESTAURAX</td><td>Plásticos Externos</td><td class="highlight">Puro a 1:1</td></tr>
-        <tr><td>SOLVFRESH</td><td>Colas / Chiclete</td><td class="highlight">Puro</td></tr>
-        <tr><td>EXTRATORA</td><td>Enxágue Final</td><td class="highlight">1:60 a 1:100</td></tr>
+        <tr><td>PLURI / KLYO</td><td>1:5 a 1:30</td></tr>
+        <tr><td>OXI / INTENSE</td><td>1:10 a 1:20</td></tr>
+        <tr><td>EXTRATORA</td><td>1:60 a 1:100</td></tr>
       </tbody>
     </table>
   </div>
 
   <!-- REGISTRO DE SERVIÇOS -->
   <div class="card">
-    <h2>🛋️ Novo Registro</h2>
+    <h2> Couch Novo Registro</h2>
     <select id="selectServico" onchange="atualizarCampos()">
-      <option value="">-- Selecione o serviço --</option>
-      <optgroup label="VEÍCULOS"><option value="100|120|🚗 Bancos">🚗 Bancos (R$120)</option><option value="195|220|🚗 Completo">🚗 Completo (R$220)</option></optgroup>
-      <optgroup label="ESTOFADOS"><option value="90|120|🛋️ Sofá 2 lug">🛋️ Sofá 2 lug (R$120)</option><option value="110|150|🛋️ Sofá 3 lug">🛋️ Sofá 3 lug (R$150)</option><option value="65|80|🛏️ Solteiro">🛏️ Solteiro (R$80)</option><option value="100|120|🛏️ Casal">🛏️ Casal (R$120)</option></optgroup>
-      <option value="promo|cadeira">🪑 Cadeiras (Promo 4=80 / 6=100)</option>
+      <option value="">-- Selecione --</option>
+      <optgroup label="CADEIRAS"><option value="promo|cadeira">🪑 Cadeiras (Promo 4=80 / 6=100)</option></optgroup>
+      <optgroup label="VEÍCULOS"><option value="100|120|🚗 Bancos">🚗 Bancos (R$120)</option><option value="195|220|🚗 Completo (Intense/Restaurax)">🚗 Completo (R$220)</option></optgroup>
+      <optgroup label="SOFÁS"><option value="90|120|🛋️ Sofá 2 lug">🛋️ Sofá 2 lug (R$120)</option><option value="110|150|🛋️ Sofá 3 lug">🛋️ Sofá 3 lug (R$150)</option><option value="140|180|🛋️ Sofá Grande">🛋️ Sofá Grande (R$180+)</option></optgroup>
+      <optgroup label="COLCHÕES"><option value="65|80|🛏️ Solteiro">🛏️ Solteiro (R$80)</option><option value="100|120|🛏️ Casal">🛏️ Casal (R$120)</option><option value="120|150|🛏️ Queen">🛏️ Queen (R$150)</option><option value="140|180|🛏️ King">🛏️ King (R$180)</option></optgroup>
+      <optgroup label="POLTRONAS"><option value="55|70|💺 Peq">💺 Poltrona P (R$70)</option><option value="70|90|💺 Méd">💺 Poltrona M (R$90)</option><option value="90|120|💺 Gde">💺 Poltrona G/Recl (R$120)</option></optgroup>
+      <option value="0|0|⚙️ Outro">⚙️ Personalizado</option>
     </select>
-    <input type="number" id="valor" placeholder="Valor R$">
-    <input type="number" id="custo" placeholder="Custo R$">
-    <button class="btn-calc" onclick="salvarServico()">Salvar Serviço</button>
+
+    <div id="boxQtd">
+      <label>Quantidade de Unidades</label>
+      <input type="number" id="qtd" value="1" min="1" oninput="calcularCadeiraHigi()">
+    </div>
+    
+    <label>Valor Final (R$)</label><input type="number" id="valor" placeholder="0.00">
+    <label>Custo Prod. (R$)</label><input type="number" id="custo" placeholder="0.00">
+    <label>Seu Lucro (R$)</label><input type="number" id="maodeobra" placeholder="0.00" oninput="ajustarManual()">
+    <button class="btn-calc" onclick="salvarServico()">Salvar Entrada</button>
   </div>
 
   <div class="card">
-    <h2>📊 Resumo Mensal</h2>
+    <h2>📊 Lucro Mensal Real</h2>
     <span id="totalAcumulado" class="total-valor">R$ 0,00</span>
     <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
     <div id="listaHistorico" style="margin-top: 15px;"></div>
@@ -99,26 +99,45 @@
   </div>
 
   <script>
-    const CHAVE = "WESLEI_GESTAO_V5_REFTABLE"; 
+    const CHAVE = "WESLEI_GESTAO_FINAL_PRO_V3"; 
     window.onload = exibir;
 
     function calcularDiluicao() {
       const vol = parseFloat(document.getElementById('volumeFrasco').value);
       const prop = parseFloat(document.getElementById('proporcaoDiluicao').value);
-      if (!vol || !prop) return;
-      const mlProduto = vol / (1 + prop);
+      const mlProd = vol / (1 + prop);
       document.getElementById('resultadoDiluicao').style.display = "block";
-      document.getElementById('msgProduto').innerText = `${mlProduto.toFixed(1)} ml de Produto`;
-      document.getElementById('msgAgua').innerText = `Com ${(vol - mlProduto).toFixed(1)} ml de Água`;
+      document.getElementById('msgProduto').innerText = `${mlProd.toFixed(1)} ml de Produto`;
+      document.getElementById('msgAgua').innerText = `Com ${(vol - mlProd).toFixed(1)} ml de Água`;
     }
 
     function atualizarCampos() {
       const s = document.getElementById('selectServico');
-      if (s.value && s.value !== "promo|cadeira") {
+      const b = document.getElementById('boxQtd');
+      if (s.value === "promo|cadeira") {
+        b.style.display = "block";
+        calcularCadeiraHigi();
+      } else if (s.value && s.value !== "0|0|⚙️ Outro") {
+        b.style.display = "none";
         const [lucro, preco] = s.value.split('|');
         document.getElementById('valor').value = preco;
         document.getElementById('custo').value = (preco - lucro).toFixed(2);
-      }
+        document.getElementById('maodeobra').value = lucro;
+      } else { b.style.display = "none"; }
+    }
+
+    function calcularCadeiraHigi() {
+      const q = parseInt(document.getElementById('qtd').value) || 1;
+      let preco = q < 4 ? q * 25 : (q < 6 ? 80 : Math.max(100, q * 16.666));
+      document.getElementById('valor').value = preco.toFixed(2);
+      document.getElementById('custo').value = (q * 3).toFixed(2);
+      document.getElementById('maodeobra').value = (preco - (q * 3)).toFixed(2);
+    }
+
+    function ajustarManual() {
+      const c = parseFloat(document.getElementById('custo').value) || 0;
+      const m = parseFloat(document.getElementById('maodeobra').value) || 0;
+      document.getElementById('valor').value = (c + m).toFixed(2);
     }
 
     function salvarServico() {
@@ -127,6 +146,7 @@
       if (isNaN(v) || isNaN(c)) return;
       const s = document.getElementById('selectServico');
       let nome = s.options[s.selectedIndex].text;
+      if (s.value === "promo|cadeira") nome = `🪑 Cadeiras (${document.getElementById('qtd').value}x)`;
       addHist(nome, (v - c));
     }
 
@@ -168,7 +188,7 @@
       let t = `📊 *RESUMO WESLEI R. HIGIENIZAÇÃO*\n\n`;
       let s = 0;
       h.forEach(i => { t += `✅ ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; s += i.valor; });
-      t += `\n💰 *LUCRO TOTAL: R$ ${s.toFixed(2)}*`;
+      t += `\n💰 *LUCRO: R$ ${s.toFixed(2)}*`;
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
