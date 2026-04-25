@@ -3,22 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HigiExpert Pro - Gestão Total</title>
-  <link rel="icon" href="https://flaticon.com">
+  <title>Weslei R. Higienização - Gestão</title>
+  <link rel="icon" href="https://githubusercontent.com">
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-    .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%; max-width: 450px; box-sizing: border-box; }
-    h2 { font-size: 18px; margin: 0 0 15px 0; color: #3b82f6; }
+    
+    /* Logo Centralizada */
+    .logo-container { text-align: center; margin: 10px 0 20px 0; }
+    .logo-container img { max-width: 150px; height: auto; border-radius: 12px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); background: #fff; padding: 5px; }
+    .brand-name { display: block; font-size: 18px; font-weight: bold; color: #3b82f6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
+
+    .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%; max-width: 450px; box-sizing: border-box; border: 1px solid #334155; }
+    h2 { font-size: 14px; margin: 0 0 15px 0; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
     label { display: block; margin-top: 12px; font-size: 13px; color: #94a3b8; }
     select, input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-top: 5px; box-sizing: border-box; font-size: 16px; }
     button { width: 100%; padding: 14px; border: none; border-radius: 12px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .btn-calc { background: #22c55e; color: #fff; }
     .btn-extra { background: #f59e0b; color: #fff; }
-    .total-valor { font-size: 28px; color: #22c55e; font-weight: bold; display: block; text-align: center; }
+    .total-valor { font-size: 32px; color: #22c55e; font-weight: bold; display: block; text-align: center; margin: 10px 0; }
+    
     .meta-box { background: #0f172a; padding: 15px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; }
     .progress-bg { background: #334155; border-radius: 20px; height: 18px; width: 100%; margin: 10px 0; overflow: hidden; }
-    .progress-bar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: width 0.5s; }
-    .history-item { font-size: 13px; background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 4px solid #22c55e; }
+    .progress-bar { background: linear-gradient(90deg, #1d4ed8, #22c55e); height: 100%; width: 0%; transition: width 1s ease-in-out; }
+    
+    .history-item { font-size: 13px; background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #22c55e; }
     .item-gasto { border-left-color: #ef4444; }
     #boxQtd { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #fbbf24; }
     .promo-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 8px; display: block; text-align: center; }
@@ -26,62 +34,60 @@
 </head>
 <body>
 
-  <h1>💰 HigiExpert Pro</h1>
+  <div class="logo-container">
+    <img src="https://githubusercontent.com" alt="Weslei R. Logo">
+    <span class="brand-name">Weslei R.<br>Higienização de estofados</span>
+  </div>
 
-  <!-- REGISTRO DE SERVIÇOS -->
   <div class="card">
     <h2>🛋️ Registrar Serviço</h2>
     <select id="selectServico" onchange="atualizarCampos()">
-      <option value="">-- Escolha um serviço --</option>
-      <optgroup label="Promoção Exclusiva">
-        <option value="promo|cadeira">🪑 Cadeiras (Promo Progressiva)</option>
+      <option value="">-- Selecione o serviço --</option>
+      <optgroup label="Cadeiras">
+        <option value="promo|cadeira">🪑 Cadeiras (Promo 4=80 / 6=100)</option>
       </optgroup>
-      <optgroup label="Poltronas">
-        <option value="55|70|Poltrona Pequena">🛋️ Poltrona Pequena (R$70)</option>
-        <option value="70|90|Poltrona Média">🛋️ Poltrona Média (R$90)</option>
-        <option value="90|120|Poltrona Reclinável">🛋️ Poltrona Gde/Reclinável (R$120)</option>
+      <optgroup label="Colchões">
+        <option value="65|80|Colchão Solteiro">🛏️ Colchão Solteiro (R$ 80)</option>
+        <option value="100|120|Colchão Casal">🛏️ Colchão Casal (R$ 120)</option>
+        <option value="120|150|Colchão Queen">🛏️ Colchão Queen (R$ 150)</option>
+        <option value="140|180|Colchão King">🛏️ Colchão King (R$ 180)</option>
       </optgroup>
-      <optgroup label="Sofás e Colchões">
-        <option value="90|120|Sofá 2 lugares">Sofá 2 lugares (R$120)</option>
-        <option value="110|150|Sofá 3 lugares">Sofá 3 lugares (R$150)</option>
-        <option value="100|120|Carro Bancos">Carro - Bancos (R$120)</option>
+      <optgroup label="Sofás">
+        <option value="90|120|Sofá 2 lugares">Sofá 2 lugares (R$ 120)</option>
+        <option value="110|150|Sofá 3 lugares">Sofá 3 lugares (R$ 150)</option>
+        <option value="140|180|Sofá Grande">Sofá Grande (R$ 180+)</option>
       </optgroup>
-      <option value="0|0|Personalizado">Personalizado</option>
+      <option value="0|0|Personalizado">Personalizado / Outro</option>
     </select>
 
-    <!-- Quantidade Dinâmica -->
     <div id="boxQtd" style="display:none;">
-      <label>Quantas Cadeiras?</label>
+      <label>Quantidade de Cadeiras</label>
       <input type="number" id="qtd" value="1" min="1" oninput="calcularCadeiraHigi()">
       <span id="msgPromo" class="promo-tag"></span>
     </div>
     
     <label>Valor Cobrado (R$)</label>
     <input type="number" id="valor" placeholder="0.00">
-    
     <label>Custo Produtos (R$)</label>
     <input type="number" id="custo" placeholder="0.00">
-    
     <label>Seu Lucro (R$)</label>
     <input type="number" id="maodeobra" placeholder="0.00" oninput="ajustarManual()">
     
-    <button class="btn-calc" onclick="salvarServico()">Salvar Serviço</button>
+    <button class="btn-calc" onclick="salvarServico()">Salvar Entrada</button>
   </div>
 
-  <!-- GASTOS EXTRAS -->
   <div class="card" style="border: 1px solid #ef4444;">
-    <h2>⛽ Registrar Saída</h2>
-    <input type="number" id="valorGasto" placeholder="Valor do Gasto R$">
+    <h2>⛽ Despesas (Saídas)</h2>
+    <input type="number" id="valorGasto" placeholder="R$">
     <button class="btn-extra" onclick="salvarGasto()">Registrar Gasto</button>
   </div>
 
-  <!-- RESUMO -->
   <div class="card">
     <h2>📊 Lucro Líquido Real</h2>
     <span id="totalAcumulado" class="total-valor">R$ 0,00</span>
     
     <div class="meta-box">
-      <label>Meta do Mês (R$)</label>
+      <label>Meta Mensal (R$)</label>
       <input type="number" id="inputMeta" value="5000" onchange="exibir()">
       <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
       <div style="display: flex; justify-content: space-between; font-size: 11px; color:#94a3b8;">
@@ -91,8 +97,8 @@
     </div>
 
     <div id="listaHistorico" style="margin-top: 15px;"></div>
-    <button onclick="compartilhar()" style="background:#25d366; color:white;">📲 Relatório WhatsApp</button>
-    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Zerar Mês</button>
+    <button onclick="compartilhar()" style="background:#25d366; color:white; border-radius: 12px; font-weight: bold;">📲 Relatório WhatsApp</button>
+    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Reiniciar Mês</button>
   </div>
 
   <script>
@@ -118,23 +124,8 @@
 
     function calcularCadeiraHigi() {
       const q = parseInt(document.getElementById('qtd').value) || 1;
-      let precoFinal = 0;
-      const msg = document.getElementById('msgPromo');
-
-      // REGRA: Unitário 25 | 4+ = 80 | 6+ = 100
-      if (q < 4) {
-        precoFinal = q * 25;
-        msg.innerText = `R$ 25,00 cada`;
-      } else if (q >= 4 && q < 6) {
-        precoFinal = 80;
-        msg.innerText = `⭐ PROMO: Kit 4/5 cadeiras por R$ 80!`;
-      } else {
-        // A partir de 6, R$ 100. Se for 7, 8... mantém a média da promo (100/6 = 16.66)
-        precoFinal = Math.max(100, (q * 16.666));
-        msg.innerText = `🔥 SUPER PROMO: Kit 6+ cadeiras por R$ 100!`;
-      }
-
-      const custoFixo = q * 3; // R$ 3 de produto por cadeira
+      let precoFinal = q < 4 ? q * 25 : (q < 6 ? 80 : Math.max(100, q * 16.666));
+      const custoFixo = q * 3;
       document.getElementById('valor').value = precoFinal.toFixed(2);
       document.getElementById('custo').value = custoFixo.toFixed(2);
       document.getElementById('maodeobra').value = (precoFinal - custoFixo).toFixed(2);
@@ -159,19 +150,19 @@
     function salvarGasto() {
       const v = parseFloat(document.getElementById('valorGasto').value);
       if (isNaN(v)) return;
-      addHist("Gasto/Saída", -v, 'gasto');
+      addHist("Gasto/Despesa", -v, 'gasto');
       document.getElementById('valorGasto').value = "";
     }
 
     function addHist(nome, valor, tipo) {
-      let h = JSON.parse(localStorage.getItem('higi_final')) || [];
+      let h = JSON.parse(localStorage.getItem('higi_weslei_final')) || [];
       h.unshift({ nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
-      localStorage.setItem('higi_final', JSON.stringify(h));
+      localStorage.setItem('higi_weslei_final', JSON.stringify(h));
       exibir();
     }
 
     function exibir() {
-      const h = JSON.parse(localStorage.getItem('higi_final')) || [];
+      const h = JSON.parse(localStorage.getItem('higi_weslei_final')) || [];
       const m = parseFloat(document.getElementById('inputMeta').value) || 1;
       let s = 0;
       document.getElementById('listaHistorico').innerHTML = h.map(i => {
@@ -189,15 +180,15 @@
     }
 
     function compartilhar() {
-      const h = JSON.parse(localStorage.getItem('higi_final')) || [];
+      const h = JSON.parse(localStorage.getItem('higi_weslei_final')) || [];
       let total = 0;
-      let t = `📊 *HIGIEXPERT RELATÓRIO*\n\n`;
+      let t = `📊 *WESLEI R. HIGIENIZAÇÃO - RESUMO*\n\n`;
       h.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
-      t += `\n💰 *LUCRO REAL: R$ ${total.toFixed(2)}*`;
+      t += `\n💰 *LUCRO LÍQUIDO: R$ ${total.toFixed(2)}*`;
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
-    function limpar() { if(confirm("Deseja zerar o histórico?")) { localStorage.removeItem('higi_final'); exibir(); } }
+    function limpar() { if(confirm("Deseja zerar os registros deste mês?")) { localStorage.removeItem('higi_weslei_final'); exibir(); } }
   </script>
 </body>
 </html>
