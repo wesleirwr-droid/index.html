@@ -18,9 +18,9 @@
     .btn-calc { background: #22c55e; color: #fff; }
     .btn-blue { background: #3b82f6; color: #fff; }
     .res-box { background: #0f172a; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #3b82f6; text-align: center; }
-    .ref-table { width: 100%; font-size: 11px; margin-top: 15px; border-collapse: collapse; color: #94a3b8; }
+    .ref-table { width: 100%; font-size: 10px; margin-top: 15px; border-collapse: collapse; color: #94a3b8; }
     .ref-table th { text-align: left; color: #3b82f6; padding-bottom: 5px; }
-    .ref-table td { padding: 4px 0; border-bottom: 1px solid #334155; }
+    .ref-table td { padding: 6px 0; border-bottom: 1px solid #334155; }
     .total-valor { font-size: 32px; color: #22c55e; font-weight: bold; display: block; text-align: center; }
     .progress-bg { background: #334155; border-radius: 20px; height: 18px; width: 100%; margin: 10px 0; overflow: hidden; }
     .progress-bar { background: linear-gradient(90deg, #1d4ed8, #22c55e); height: 100%; width: 0%; transition: width 1s ease-in-out; }
@@ -38,7 +38,7 @@
 
   <!-- CALCULADORA DE DILUIÇÃO -->
   <div class="card">
-    <h2>🧪 Diluição de Produtos</h2>
+    <h2>🧪 Diluição Profissional</h2>
     <label>Frasco (ml)</label>
     <input type="number" id="volumeFrasco" value="500">
     <label>Diluição (1:...)</label>
@@ -46,20 +46,27 @@
       <option value="5">1:5 (Pesada)</option>
       <option value="10" selected>1:10 (Média)</option>
       <option value="20">1:20 (Manutenção)</option>
-      <option value="40">1:40 (Leve)</option>
+      <option value="30">1:30 (Leve/Vonixx)</option>
+      <option value="40">1:40 (Sanitizante)</option>
+      <option value="50">1:50 (Econômica)</option>
       <option value="60">1:60 (Extratora)</option>
     </select>
-    <button class="btn-blue" onclick="calcularDiluicao()">Calcular Medidas</button>
+    <button class="btn-blue" onclick="calcularDiluicao()">Calcular</button>
     <div id="resultadoDiluicao" class="res-box" style="display:none;">
       <strong id="msgProduto" style="color: #22c55e; font-size: 18px;"></strong><br>
       <span id="msgAgua" style="color: #94a3b8;"></span>
     </div>
+
+    <!-- TABELA COMPLETA DE PRODUTOS -->
     <table class="ref-table">
-      <thead><tr><th>Produto</th><th>Diluição</th></tr></thead>
+      <thead><tr><th>Produto</th><th>Indicação</th><th>Diluição</th></tr></thead>
       <tbody>
-        <tr><td>PLURI / KLYO</td><td>1:5 a 1:20</td></tr>
-        <tr><td>OXI / INTENSE</td><td>1:10 a 1:20</td></tr>
-        <tr><td>EXTRATORA</td><td>1:60 a 1:100</td></tr>
+        <tr><td>EXTRACTUS</td><td>Limpeza Geral</td><td>1:10 a 1:60</td></tr>
+        <tr><td>BACTRAN</td><td>Limpeza + Bactericida</td><td>1:10 a 1:60</td></tr>
+        <tr><td>SANITIZANTE</td><td>Finalização / Odor</td><td>1:10 a 1:40</td></tr>
+        <tr><td>MAXFRESH</td><td>Odor / Neutralizador</td><td>1:10 a 1:60</td></tr>
+        <tr><td>PLURI / KLYO</td><td>Desengraxante</td><td>1:5 a 1:30</td></tr>
+        <tr><td>EXTRATORA</td><td>Enxágue Final</td><td>1:60 a 1:100</td></tr>
       </tbody>
     </table>
   </div>
@@ -70,7 +77,7 @@
     <select id="selectServico" onchange="atualizarCampos()">
       <option value="">-- Selecione --</option>
       <optgroup label="CADEIRAS"><option value="promo|cadeira">🪑 Cadeiras (Promo 4=80 / 6=100)</option></optgroup>
-      <optgroup label="VEÍCULOS"><option value="100|120|🚗 Bancos">🚗 Bancos (R$120)</option><option value="195|220|🚗 Completo (Intense/Restaurax)">🚗 Completo (R$220)</option></optgroup>
+      <optgroup label="VEÍCULOS"><option value="100|120|🚗 Bancos">🚗 Bancos (R$120)</option><option value="195|220|🚗 Completo">🚗 Completo (R$220)</option></optgroup>
       <optgroup label="SOFÁS"><option value="90|120|🛋️ Sofá 2 lug">🛋️ Sofá 2 lug (R$120)</option><option value="110|150|🛋️ Sofá 3 lug">🛋️ Sofá 3 lug (R$150)</option><option value="140|180|🛋️ Sofá Grande">🛋️ Sofá Grande (R$180+)</option></optgroup>
       <optgroup label="COLCHÕES"><option value="65|80|🛏️ Solteiro">🛏️ Solteiro (R$80)</option><option value="100|120|🛏️ Casal">🛏️ Casal (R$120)</option><option value="120|150|🛏️ Queen">🛏️ Queen (R$150)</option><option value="140|180|🛏️ King">🛏️ King (R$180)</option></optgroup>
       <optgroup label="POLTRONAS"><option value="55|70|💺 Peq">💺 Poltrona P (R$70)</option><option value="70|90|💺 Méd">💺 Poltrona M (R$90)</option><option value="90|120|💺 Gde">💺 Poltrona G/Recl (R$120)</option></optgroup>
@@ -98,7 +105,7 @@
   </div>
 
   <script>
-    const CHAVE = "WESLEI_GESTAO_FINAL_PRO_V1"; 
+    const CHAVE = "WESLEI_GESTAO_V6_PRODS_COMPLETOS"; 
     window.onload = exibir;
 
     function calcularDiluicao() {
