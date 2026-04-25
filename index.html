@@ -7,9 +7,12 @@
   <link rel="icon" href="https://githubusercontent.com">
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+    
+    /* Logo Centralizada e Estilizada */
     .logo-container { text-align: center; margin: 10px 0 20px 0; }
-    .logo-container img { max-width: 150px; height: auto; border-radius: 12px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); background: #fff; padding: 5px; }
+    .logo-container img { max-width: 140px; height: auto; border-radius: 12px; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); background: #fff; padding: 5px; }
     .brand-name { display: block; font-size: 18px; font-weight: bold; color: #3b82f6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
+
     .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%; max-width: 450px; box-sizing: border-box; border: 1px solid #334155; }
     h2 { font-size: 14px; margin: 0 0 15px 0; color: #94a3b8; text-transform: uppercase; }
     label { display: block; margin-top: 12px; font-size: 13px; color: #94a3b8; }
@@ -20,9 +23,9 @@
     .total-valor { font-size: 32px; color: #22c55e; font-weight: bold; display: block; text-align: center; margin: 10px 0; }
     .progress-bg { background: #334155; border-radius: 20px; height: 18px; width: 100%; margin: 10px 0; overflow: hidden; }
     .progress-bar { background: linear-gradient(90deg, #1d4ed8, #22c55e); height: 100%; width: 0%; transition: width 1s ease-in-out; }
-    .history-item { font-size: 13px; background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #22c55e; position: relative; }
+    .history-item { font-size: 13px; background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #22c55e; }
     .item-gasto { border-left-color: #ef4444; }
-    .delete-btn { color: #ef4444; background: none; border: none; font-size: 18px; cursor: pointer; padding: 0 5px; }
+    .delete-btn { color: #ef4444; background: none; border: none; font-size: 22px; cursor: pointer; padding: 0 10px; line-height: 1; }
     #boxQtd { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #fbbf24; display: none; }
   </style>
 </head>
@@ -34,22 +37,26 @@
   </div>
 
   <div class="card">
-    <h2>🛋️ Novo Registro</h2>
+    <h2>🛋️ Registrar Serviço</h2>
     <select id="selectServico" onchange="atualizarCampos()">
       <option value="">-- Selecione o serviço --</option>
       <optgroup label="Cadeiras">
         <option value="promo|cadeira">🪑 Cadeira (Promo Progressiva)</option>
       </optgroup>
+      <optgroup label="Veículos">
+        <option value="100|120|Carro - Bancos">🚗 Bancos (R$120)</option>
+        <option value="200|220|Carro - Completo">🚗 Completo (R$220)</option>
+      </optgroup>
       <optgroup label="Poltronas">
-        <option value="55|70|Poltrona Pequena">🛋️ Poltrona Pequena (R$70)</option>
-        <option value="70|90|Poltrona Média">🛋️ Poltrona Média (R$90)</option>
-        <option value="90|120|Poltrona Reclinável">🛋️ Poltrona Gde/Reclinável (R$120)</option>
+        <option value="55|70|Poltrona Pequena">Interiores Pequenos (R$70)</option>
+        <option value="70|90|Poltrona Média">Interiores Médios (R$90)</option>
+        <option value="90|120|Poltrona Reclinável">Poltrona Reclinável (R$120)</option>
       </optgroup>
       <optgroup label="Colchões">
-        <option value="65|80|Solteiro">🛏️ Colchão Solteiro (R$80)</option>
-        <option value="100|120|Casal">🛏️ Colchão Casal (R$120)</option>
-        <option value="120|150|Queen">🛏️ Colchão Queen (R$150)</option>
-        <option value="140|180|King">🛏️ Colchão King (R$180)</option>
+        <option value="65|80|Colchão Solteiro">🛏️ Solteiro (R$80)</option>
+        <option value="100|120|Colchão Casal">🛏️ Casal (R$120)</option>
+        <option value="120|150|Colchão Queen">🛏️ Queen (R$150)</option>
+        <option value="140|180|Colchão King">🛏️ King (R$180)</option>
       </optgroup>
       <optgroup label="Sofás">
         <option value="90|120|Sofá 2 lug">Sofá 2 lugares (R$120)</option>
@@ -98,7 +105,7 @@
   </div>
 
   <script>
-    const CHAVE = "BANCO_DADOS_WESLEI_FINAL"; 
+    const CHAVE = "WESLEI_PRO_FINAL_V2"; 
 
     window.onload = exibir;
 
@@ -117,9 +124,6 @@
         document.getElementById('maodeobra').value = lucro;
       } else {
         b.style.display = "none";
-        document.getElementById('valor').value = "";
-        document.getElementById('custo').value = "";
-        document.getElementById('maodeobra').value = "";
       }
     }
 
@@ -140,17 +144,17 @@
     function salvarServico() {
       const v = parseFloat(document.getElementById('valor').value);
       const c = parseFloat(document.getElementById('custo').value);
-      if (isNaN(v) || isNaN(c)) return alert("Preencha os valores!");
+      if (isNaN(v) || isNaN(c)) return;
       const s = document.getElementById('selectServico');
       let nome = s.options[s.selectedIndex].text;
       if (s.value === "promo|cadeira") nome = `Cadeiras (${document.getElementById('qtd').value}x)`;
-      if (s.value === "0|0|Personalizado") nome = prompt("Nome do serviço?") || "Personalizado";
+      if (s.value === "0|0|Personalizado") nome = prompt("Nome do serviço?") || "Extra";
       addHist(nome, (v - c), 'servico');
     }
 
     function salvarGasto() {
       const v = parseFloat(document.getElementById('valorGasto').value);
-      if (isNaN(v)) return alert("Preencha o valor!");
+      if (isNaN(v)) return;
       addHist("Gasto/Saída", -v, 'gasto');
       document.getElementById('valorGasto').value = "";
     }
@@ -179,7 +183,7 @@
         s += i.valor;
         return `<div class="history-item ${i.tipo === 'gasto' ? 'item-gasto' : ''}">
           <div><strong>${i.nome}</strong><br><small>${i.data}</small></div>
-          <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;">
             <span style="color: ${i.valor >= 0 ? '#22c55e' : '#ef4444'}">R$ ${i.valor.toFixed(2)}</span>
             <button class="delete-btn" onclick="excluirItem(${i.id})">×</button>
           </div>
@@ -197,7 +201,7 @@
       let total = 0;
       let t = `📊 *RESUMO WESLEI R. HIGIENIZAÇÃO*\n\n`;
       h.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
-      t += `\n💰 *LUCRO REAL: R$ ${total.toFixed(2)}*`;
+      t += `\n💰 *LUCRO TOTAL: R$ ${total.toFixed(2)}*`;
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
