@@ -7,29 +7,23 @@
   <link rel="icon" href="https://githubusercontent.com">
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-    
-    /* Logo Centralizada */
     .logo-container { text-align: center; margin: 10px 0 20px 0; }
     .logo-container img { max-width: 150px; height: auto; border-radius: 12px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); background: #fff; padding: 5px; }
     .brand-name { display: block; font-size: 18px; font-weight: bold; color: #3b82f6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
-
     .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%; max-width: 450px; box-sizing: border-box; border: 1px solid #334155; }
-    h2 { font-size: 14px; margin: 0 0 15px 0; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+    h2 { font-size: 14px; margin: 0 0 15px 0; color: #94a3b8; text-transform: uppercase; }
     label { display: block; margin-top: 12px; font-size: 13px; color: #94a3b8; }
     select, input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-top: 5px; box-sizing: border-box; font-size: 16px; }
     button { width: 100%; padding: 14px; border: none; border-radius: 12px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .btn-calc { background: #22c55e; color: #fff; }
     .btn-extra { background: #f59e0b; color: #fff; }
     .total-valor { font-size: 32px; color: #22c55e; font-weight: bold; display: block; text-align: center; margin: 10px 0; }
-    
-    .meta-box { background: #0f172a; padding: 15px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; }
     .progress-bg { background: #334155; border-radius: 20px; height: 18px; width: 100%; margin: 10px 0; overflow: hidden; }
     .progress-bar { background: linear-gradient(90deg, #1d4ed8, #22c55e); height: 100%; width: 0%; transition: width 1s ease-in-out; }
-    
-    .history-item { font-size: 13px; background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #22c55e; }
+    .history-item { font-size: 13px; background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #22c55e; position: relative; }
     .item-gasto { border-left-color: #ef4444; }
-    #boxQtd { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #fbbf24; }
-    .promo-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 8px; display: block; text-align: center; }
+    .delete-btn { color: #ef4444; background: none; border: none; font-size: 18px; cursor: pointer; padding: 0 5px; }
+    #boxQtd { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #fbbf24; display: none; }
   </style>
 </head>
 <body>
@@ -40,30 +34,34 @@
   </div>
 
   <div class="card">
-    <h2>🛋️ Registrar Serviço</h2>
+    <h2>🛋️ Novo Registro</h2>
     <select id="selectServico" onchange="atualizarCampos()">
       <option value="">-- Selecione o serviço --</option>
       <optgroup label="Cadeiras">
-        <option value="promo|cadeira">🪑 Cadeiras (Promo 4=80 / 6=100)</option>
+        <option value="promo|cadeira">🪑 Cadeira (Promo Progressiva)</option>
+      </optgroup>
+      <optgroup label="Poltronas">
+        <option value="55|70|Poltrona Pequena">🛋️ Poltrona Pequena (R$70)</option>
+        <option value="70|90|Poltrona Média">🛋️ Poltrona Média (R$90)</option>
+        <option value="90|120|Poltrona Reclinável">🛋️ Poltrona Gde/Reclinável (R$120)</option>
       </optgroup>
       <optgroup label="Colchões">
-        <option value="65|80|Colchão Solteiro">🛏️ Colchão Solteiro (R$ 80)</option>
-        <option value="100|120|Colchão Casal">🛏️ Colchão Casal (R$ 120)</option>
-        <option value="120|150|Colchão Queen">🛏️ Colchão Queen (R$ 150)</option>
-        <option value="140|180|Colchão King">🛏️ Colchão King (R$ 180)</option>
+        <option value="65|80|Solteiro">🛏️ Colchão Solteiro (R$80)</option>
+        <option value="100|120|Casal">🛏️ Colchão Casal (R$120)</option>
+        <option value="120|150|Queen">🛏️ Colchão Queen (R$150)</option>
+        <option value="140|180|King">🛏️ Colchão King (R$180)</option>
       </optgroup>
       <optgroup label="Sofás">
-        <option value="90|120|Sofá 2 lugares">Sofá 2 lugares (R$ 120)</option>
-        <option value="110|150|Sofá 3 lugares">Sofá 3 lugares (R$ 150)</option>
-        <option value="140|180|Sofá Grande">Sofá Grande (R$ 180+)</option>
+        <option value="90|120|Sofá 2 lug">Sofá 2 lugares (R$120)</option>
+        <option value="110|150|Sofá 3 lug">Sofá 3 lugares (R$150)</option>
+        <option value="140|180|Sofá Grande">Sofá Grande (R$180+)</option>
       </optgroup>
       <option value="0|0|Personalizado">Personalizado / Outro</option>
     </select>
 
-    <div id="boxQtd" style="display:none;">
+    <div id="boxQtd">
       <label>Quantidade de Cadeiras</label>
       <input type="number" id="qtd" value="1" min="1" oninput="calcularCadeiraHigi()">
-      <span id="msgPromo" class="promo-tag"></span>
     </div>
     
     <label>Valor Cobrado (R$)</label>
@@ -78,7 +76,7 @@
 
   <div class="card" style="border: 1px solid #ef4444;">
     <h2>⛽ Despesas (Saídas)</h2>
-    <input type="number" id="valorGasto" placeholder="R$">
+    <input type="number" id="valorGasto" placeholder="Valor R$">
     <button class="btn-extra" onclick="salvarGasto()">Registrar Gasto</button>
   </div>
 
@@ -86,22 +84,22 @@
     <h2>📊 Lucro Líquido Real</h2>
     <span id="totalAcumulado" class="total-valor">R$ 0,00</span>
     
-    <div class="meta-box">
-      <label>Meta Mensal (R$)</label>
-      <input type="number" id="inputMeta" value="5000" onchange="exibir()">
-      <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
-      <div style="display: flex; justify-content: space-between; font-size: 11px; color:#94a3b8;">
-        <span id="txtProgresso">0%</span>
-        <span id="txtFalta">Falta: R$ 0,00</span>
-      </div>
+    <label>Meta Mensal (R$)</label>
+    <input type="number" id="inputMeta" value="5000" onchange="exibir()">
+    <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
+    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+      <span id="txtProgresso">0%</span>
+      <span id="txtFalta">Falta: R$ 0,00</span>
     </div>
 
     <div id="listaHistorico" style="margin-top: 15px;"></div>
-    <button onclick="compartilhar()" style="background:#25d366; color:white; border-radius: 12px; font-weight: bold;">📲 Relatório WhatsApp</button>
-    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Reiniciar Mês</button>
+    <button onclick="compartilhar()" style="background:#25d366; color:white; font-weight: bold;">📲 WhatsApp</button>
+    <button onclick="limpar()" style="background:none; color:#ef4444; font-size:11px; margin-top:15px; width:100%;">Zerar Tudo</button>
   </div>
 
   <script>
+    const CHAVE = "BANCO_DADOS_WESLEI_FINAL"; 
+
     window.onload = exibir;
 
     function atualizarCampos() {
@@ -119,16 +117,18 @@
         document.getElementById('maodeobra').value = lucro;
       } else {
         b.style.display = "none";
+        document.getElementById('valor').value = "";
+        document.getElementById('custo').value = "";
+        document.getElementById('maodeobra').value = "";
       }
     }
 
     function calcularCadeiraHigi() {
       const q = parseInt(document.getElementById('qtd').value) || 1;
       let precoFinal = q < 4 ? q * 25 : (q < 6 ? 80 : Math.max(100, q * 16.666));
-      const custoFixo = q * 3;
       document.getElementById('valor').value = precoFinal.toFixed(2);
-      document.getElementById('custo').value = custoFixo.toFixed(2);
-      document.getElementById('maodeobra').value = (precoFinal - custoFixo).toFixed(2);
+      document.getElementById('custo').value = (q * 3).toFixed(2);
+      document.getElementById('maodeobra').value = (precoFinal - (q * 3)).toFixed(2);
     }
 
     function ajustarManual() {
@@ -140,36 +140,49 @@
     function salvarServico() {
       const v = parseFloat(document.getElementById('valor').value);
       const c = parseFloat(document.getElementById('custo').value);
+      if (isNaN(v) || isNaN(c)) return alert("Preencha os valores!");
       const s = document.getElementById('selectServico');
       let nome = s.options[s.selectedIndex].text;
       if (s.value === "promo|cadeira") nome = `Cadeiras (${document.getElementById('qtd').value}x)`;
-      if (isNaN(v) || isNaN(c)) return;
+      if (s.value === "0|0|Personalizado") nome = prompt("Nome do serviço?") || "Personalizado";
       addHist(nome, (v - c), 'servico');
     }
 
     function salvarGasto() {
       const v = parseFloat(document.getElementById('valorGasto').value);
-      if (isNaN(v)) return;
-      addHist("Gasto/Despesa", -v, 'gasto');
+      if (isNaN(v)) return alert("Preencha o valor!");
+      addHist("Gasto/Saída", -v, 'gasto');
       document.getElementById('valorGasto').value = "";
     }
 
     function addHist(nome, valor, tipo) {
-      let h = JSON.parse(localStorage.getItem('higi_weslei_final')) || [];
-      h.unshift({ nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
-      localStorage.setItem('higi_weslei_final', JSON.stringify(h));
+      let h = JSON.parse(localStorage.getItem(CHAVE)) || [];
+      h.unshift({ id: Date.now(), nome, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
+      localStorage.setItem(CHAVE, JSON.stringify(h));
       exibir();
     }
 
+    function excluirItem(id) {
+      if(confirm("Excluir este item?")) {
+        let h = JSON.parse(localStorage.getItem(CHAVE)) || [];
+        h = h.filter(item => item.id !== id);
+        localStorage.setItem(CHAVE, JSON.stringify(h));
+        exibir();
+      }
+    }
+
     function exibir() {
-      const h = JSON.parse(localStorage.getItem('higi_weslei_final')) || [];
+      const h = JSON.parse(localStorage.getItem(CHAVE)) || [];
       const m = parseFloat(document.getElementById('inputMeta').value) || 1;
       let s = 0;
       document.getElementById('listaHistorico').innerHTML = h.map(i => {
         s += i.valor;
         return `<div class="history-item ${i.tipo === 'gasto' ? 'item-gasto' : ''}">
           <div><strong>${i.nome}</strong><br><small>${i.data}</small></div>
-          <span style="color: ${i.valor >= 0 ? '#22c55e' : '#ef4444'}">R$ ${i.valor.toFixed(2)}</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="color: ${i.valor >= 0 ? '#22c55e' : '#ef4444'}">R$ ${i.valor.toFixed(2)}</span>
+            <button class="delete-btn" onclick="excluirItem(${i.id})">×</button>
+          </div>
         </div>`;
       }).join('');
       document.getElementById('totalAcumulado').innerText = `R$ ${s.toFixed(2)}`;
@@ -180,15 +193,15 @@
     }
 
     function compartilhar() {
-      const h = JSON.parse(localStorage.getItem('higi_weslei_final')) || [];
+      const h = JSON.parse(localStorage.getItem(CHAVE)) || [];
       let total = 0;
-      let t = `📊 *WESLEI R. HIGIENIZAÇÃO - RESUMO*\n\n`;
+      let t = `📊 *RESUMO WESLEI R. HIGIENIZAÇÃO*\n\n`;
       h.forEach(i => { t += `${i.valor >= 0 ? '✅' : '🔴'} ${i.nome}: R$ ${i.valor.toFixed(2)}\n`; total += i.valor; });
-      t += `\n💰 *LUCRO LÍQUIDO: R$ ${total.toFixed(2)}*`;
+      t += `\n💰 *LUCRO REAL: R$ ${total.toFixed(2)}*`;
       window.open(`https://whatsapp.com{encodeURIComponent(t)}`);
     }
 
-    function limpar() { if(confirm("Deseja zerar os registros deste mês?")) { localStorage.removeItem('higi_weslei_final'); exibir(); } }
+    function limpar() { if(confirm("Deseja zerar os registros?")) { localStorage.removeItem(CHAVE); exibir(); } }
   </script>
 </body>
 </html>
